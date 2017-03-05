@@ -5,9 +5,9 @@ date: "27 February 2017"
 output: md_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
-```
+%```{r setup, include=FALSE}
+%knitr::opts_chunk$set(echo = FALSE)
+%```
 <div style="text-align: justify">
 #Introduction
 
