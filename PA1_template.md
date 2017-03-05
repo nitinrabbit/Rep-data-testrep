@@ -1,4 +1,3 @@
-<div style="text-align: justify">
 Introduction
 ============
 
@@ -29,7 +28,6 @@ between the previous 5-minute interval to the current 5-minute interval.
 Data Layout
 ===========
 
-<div style="text-align: justify">
 These intervals are assigned a unique ID which corresponds to the
 interval taken at that day. As an example, the ID of 15 means that at
 the third observation (i.e. at the 15 minute mark), that is when the
@@ -53,7 +51,6 @@ As such, the data provided to us is a 3-column data frame:
     was taken. This is in the YYYY-MM-DD format.
 3.  Column 3 - interval: The aforementioned ID that determines at which
     5-minute interval the reading was taken at (5, 10, 15, 20, etc.)
-    </div>
 
 Preamble
 --------
@@ -85,7 +82,7 @@ There are five steps overall in our analysis:
     and weekends and observe if there is any difference in activity
     patterns between these two classes. The same kind of plot is
     repeated like in Step \#3, but now there are two separate plots to
-    reflect the activity on the weekdays and weekends.&lt;&gt;
+    reflect the activity on the weekdays and weekends.
 
 Loading and Preprocessing Dataset
 ---------------------------------

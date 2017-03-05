@@ -18,22 +18,22 @@ This assignment makes use of data from a personal activity monitoring device. Th
 The overall goal of this assignment is to make some basic exploratory data analysis to assess some activity patterns with regards to the anonymous individual's walking patterns. For each day, there are readings taken at particular 5-minute intervals. These readings correspond to the number of steps taken by the anonymous individual between the previous 5-minute interval to the current 5-minute interval. 
 
 #Data Layout
-<div style="text-align: justify">These intervals are assigned a unique ID which corresponds to the interval taken at that day. As an example, the ID of 15 means that at the third observation (i.e. at the 15 minute mark), that is when the reading was taken for this day. There are 61 days between October and November, and as such there are 61 observations recorded at the 15 minute mark. Furthermore, there are 61 observations taken at the same time interval as they were taken each day within these two months. As such, there are 61 observations for the 20 minute mark, the 30 minute mark, the 45 minute mark and so on. In addition, for each day, there are 288 intervals / observations were recorded at per day.
+These intervals are assigned a unique ID which corresponds to the interval taken at that day. As an example, the ID of 15 means that at the third observation (i.e. at the 15 minute mark), that is when the reading was taken for this day. There are 61 days between October and November, and as such there are 61 observations recorded at the 15 minute mark. Furthermore, there are 61 observations taken at the same time interval as they were taken each day within these two months. As such, there are 61 observations for the 20 minute mark, the 30 minute mark, the 45 minute mark and so on. In addition, for each day, there are 288 intervals / observations were recorded at per day.
 
 As such, the data provided to us is a 3-column data frame:
 
 1. Column 1 - steps: Indicates the number of steps taken during a neighbouring 5-minute interval (between 5 minutes and 10 minutes, 10 minutes and 15 minutes, etc.). There were some instances where there were no readings taken, most likely due to the fact that the subject was sleeping or the device was shut off. These are coded in as NA values.
 2. Column 2 - date: Indicates the date at which the measurement was taken. This is in the YYYY-MM-DD format.
-3. Column 3 - interval: The aforementioned ID that determines at which 5-minute interval the reading was taken at (5, 10, 15, 20, etc.)</div>
+3. Column 3 - interval: The aforementioned ID that determines at which 5-minute interval the reading was taken at (5, 10, 15, 20, etc.)
 
 ##Preamble
-<div style="text-align: justify">There are five steps overall in our analysis:
+There are five steps overall in our analysis:
 
 1. Loading in and preprocessing the data
 2. Plotting a histogram of the total number of steps taken each day and calculating the mean and median of each day.
 3. Determining the average daily activity pattern: Plotting a time-series plot for each 5-minute interval (the x-axis) with the average number of steps averaged across all days (the y-axis). This means that for each 5-minute interval, calculate the average of the 61 observations taken at each interval. We also calculate the median of the 61 observations taken at each interval as well.
 4. Imputing missing values: There were some instances where the amount of steps read for an interval were missing. These were coded in as NA values. The presence of missing days may introduce bias into some calculations or summaries of the data. In this step, a simple strategy was performed to replace the missing values in the dataset with a filler value. This value was chosen to be the mean within the 5-minute interval the value was missing for. For example, suppose on October 5, 2012, at the 10-minute interval there is missing data. This data is filled in by the mean of whatever data was available overall (the 61 observations excluding the NA values) for this particular interval. The analysis of Step #2 is repeated with similarities and differences being reported.
-5. The last part of the analysis is to split up the data into weekdays and weekends and observe if there is any difference in activity patterns between these two classes. The same kind of plot is repeated like in Step #3, but now there are two separate plots to reflect the activity on the weekdays and weekends.<\div>
+5. The last part of the analysis is to split up the data into weekdays and weekends and observe if there is any difference in activity patterns between these two classes. The same kind of plot is repeated like in Step #3, but now there are two separate plots to reflect the activity on the weekdays and weekends.
 
 ##Loading and Preprocessing Dataset
 Before we begin, it is imperative that the reader set the working directory to be where this R Markdown file (and subsequently all of the data for the analysis) is located. This can be done with the setwd() command.
