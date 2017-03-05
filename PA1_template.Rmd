@@ -9,14 +9,15 @@ output: md_document
 knitr::opts_chunk$set(echo = FALSE)
 ```
 <div style="text-align: justify">
-# Introduction
+#Introduction
+
 With the advancement of technology and the growth of the big data movement, it is now possible to collect a large amount of data about personal movement using activity monitoring devices. Such examples are: Fitbit, Nike Fuelband, or Jawbone Up. These kinds of devices are part of the "quantified self" movement: those who measurements about themselves on a regular basis in order to improve their health, find patterns in their behaviour, or because they are simply technology geeks. However, these data remain severely underused due to the fact that the raw data are hard to obtain and there is a lack of statistical methods and software for processing and interpreting the data.
 
 This assignment makes use of data from a personal activity monitoring device. This device collects data at 5 minute intervals throughout the day. The data consists of two months of data from an anonymous individual collected during the months of October and November 2012 and include the number of steps taken in 5 minute intervals each day.
 
 The overall goal of this assignment is to make some basic exploratory data analysis to assess some activity patterns with regards to the anonymous individual's walking patterns. For each day, there are readings taken at particular 5-minute intervals. These readings correspond to the number of steps taken by the anonymous individual between the previous 5-minute interval to the current 5-minute interval. 
 
-# Data Layout
+#Data Layout
 <div style="text-align: justify">These intervals are assigned a unique ID which corresponds to the interval taken at that day. As an example, the ID of 15 means that at the third observation (i.e. at the 15 minute mark), that is when the reading was taken for this day. There are 61 days between October and November, and as such there are 61 observations recorded at the 15 minute mark. Furthermore, there are 61 observations taken at the same time interval as they were taken each day within these two months. As such, there are 61 observations for the 20 minute mark, the 30 minute mark, the 45 minute mark and so on. In addition, for each day, there are 288 intervals / observations were recorded at per day.
 
 As such, the data provided to us is a 3-column data frame:
@@ -25,7 +26,7 @@ As such, the data provided to us is a 3-column data frame:
 2. Column 2 - date: Indicates the date at which the measurement was taken. This is in the YYYY-MM-DD format.
 3. Column 3 - interval: The aforementioned ID that determines at which 5-minute interval the reading was taken at (5, 10, 15, 20, etc.)</div>
 
-## Preamble
+##Preamble
 <div style="text-align: justify">There are five steps overall in our analysis:
 
 1. Loading in and preprocessing the data
@@ -34,7 +35,7 @@ As such, the data provided to us is a 3-column data frame:
 4. Imputing missing values: There were some instances where the amount of steps read for an interval were missing. These were coded in as NA values. The presence of missing days may introduce bias into some calculations or summaries of the data. In this step, a simple strategy was performed to replace the missing values in the dataset with a filler value. This value was chosen to be the mean within the 5-minute interval the value was missing for. For example, suppose on October 5, 2012, at the 10-minute interval there is missing data. This data is filled in by the mean of whatever data was available overall (the 61 observations excluding the NA values) for this particular interval. The analysis of Step #2 is repeated with similarities and differences being reported.
 5. The last part of the analysis is to split up the data into weekdays and weekends and observe if there is any difference in activity patterns between these two classes. The same kind of plot is repeated like in Step #3, but now there are two separate plots to reflect the activity on the weekdays and weekends.<\div>
 
-## Loading and Preprocessing Dataset
+##Loading and Preprocessing Dataset
 Before we begin, it is imperative that the reader set the working directory to be where this R Markdown file (and subsequently all of the data for the analysis) is located. This can be done with the setwd() command.
 
 The first thing we obviously need to do is read in the data and clean it up so that it is presentable for analysis. Dr. Roger Peng, being the most generous person on the planet, has already cleaned up the data for us. However, the only thing that will be done is to convert the dates into a POSIXlt class for easier processing. The data have been extracted from .zip archive file and all we need to do is to read the datafile activity.csv in using read.csv(). After, the dates will be transformed into the POSIXlt class.
@@ -56,7 +57,7 @@ uniqueIntervals <- unique(data$interval)
 ```
 As for uniqueDates and uniqueIntervals, these are variables that store a list of all possible dates and intervals. These will primarily be used to help plot our necessary data and for data processing.
 
-## What is the mean total number of steps taken per day?
+##What is the mean total number of steps taken per day?
 First, let's plot a histogram of the total number of steps taken for each day. Before we do this, let's split up the data into individual data frames where each data frame represents the data for a particular day. After this, we will create a vector that accumulates all of the steps taken for each day and let it get stored into a vector. Each element in this vector represents the total number of steps taken for a particular day (61 in total). It should be noted that NA values will be ignored for the time being. After, we will plot a histogram where the x-axis represents the particular day in question, while the y-axis denotes how many steps were taken in total for each day. We will also calculate what the mean and median number of steps per day were as well.
 
 ```{r}
@@ -78,7 +79,7 @@ head(steps_split_day_mean_df)
 head(steps_split_day_median_df)
 ```
 
-## What is the average daily activity pattern?
+##What is the average daily activity pattern?
 What we now need to do is split up this data again so that individual data frames represent the steps taken over each time interval. As such, there will be a data frame for interval 5, another data frame for interval 10 and so on. Once we extract out these individual data frames, we thus compute the mean for each time interval. It is imperative to note that we again will ignore NA values. We will thus plot the data as a time-series plot (of type="l"). Once we have done this, we will locate where in the time-series plot the maximum is located and will draw a red vertical line to denote this location:
 ```{r}
 steps_split_interval <- split(data$steps, data$interval)
@@ -100,7 +101,7 @@ maxInterval <- uniqueIntervals[steps_split_interval_maxIndex]
 abline(v=maxInterval, col="red", lwd=3)
 ```
 
-## Imputing the missing values.
+##Imputing the missing values.
 The strategy that we will use to fill in the missing values in the data set is to replace all NA values with the mean of that particular 5-minute interval the observation falls on. Now that we have devised this strategy, let's replace all of the NA values with the aforementioned strategy.
 ```{r}
 steps_split_interval_mean[is.nan(steps_split_interval_mean)] <- 0
@@ -138,7 +139,7 @@ steps_split_day_new_median_df <- data.frame(date=uniqueDates,
 head(steps_split_day_new_mean_df)
 head(steps_split_day_new_median_df)
 ```
-# Are there differences in activity patterns during the weekdays and the weekends ?
+#Are there differences in activity patterns during the weekdays and the weekends ?
 With the new data set we have just created, we are going to split up the data into two data frames - one data frame consists of all steps taken on a weekday, while the other data frame consists of all steps taken on a weekend. The following R code illustrates this for us:
 ```{r}
 wdays <- dates_posixit$wday
