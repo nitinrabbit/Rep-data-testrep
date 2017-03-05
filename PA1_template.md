@@ -1,4 +1,3 @@
-%`{r setup, include=FALSE} %knitr::opts_chunk$set(echo = FALSE) %`
 Introduction
 ============
 
@@ -19,26 +18,28 @@ day. The data consists of two months of data from an anonymous
 individual collected during the months of October and November 2012 and
 include the number of steps taken in 5 minute intervals each day.
 
-The overall goal of this assignment is to make some basic exploratory
-data analysis to assess some activity patterns with regards to the
-anonymous individual's walking patterns. For each day, there are
-readings taken at particular 5-minute intervals. These readings
-correspond to the number of steps taken by the anonymous individual
-between the previous 5-minute interval to the current 5-minute interval.
+Based on the given data, we carry out some basic exploratory data
+analysis and answer some questions. The overall goal of this assignment
+is to make some basic exploratory data analysis to assess some activity
+patterns with regards to the anonymous individual's walking patterns.
+For each day, there are readings taken at particular 5-minute intervals.
+These readings correspond to the number of steps taken by the anonymous
+individual between the previous 5-minute interval to the current
+5-minute interval.
 
 Data Layout
 ===========
 
-These intervals are assigned a unique ID which corresponds to the
-interval taken at that day. As an example, the ID of 15 means that at
-the third observation (i.e. at the 15 minute mark), that is when the
-reading was taken for this day. There are 61 days between October and
-November, and as such there are 61 observations recorded at the 15
-minute mark. Furthermore, there are 61 observations taken at the same
-time interval as they were taken each day within these two months. As
-such, there are 61 observations for the 20 minute mark, the 30 minute
-mark, the 45 minute mark and so on. In addition, for each day, there are
-288 intervals / observations were recorded at per day.
+For each day, there are reading recorded at 5 minute interval, with a
+unique ID.As an example, the ID of 15 means that at the third
+observation (i.e. at the 15 minute mark), that is when the reading was
+taken for this day. There are 61 days between October and November, and
+as such there are 61 observations recorded at the 15 minute mark.
+Furthermore, there are 61 observations taken at the same time interval
+as they were taken each day within these two months. As such, there are
+61 observations for the 20 minute mark, the 30 minute mark, the 45
+minute mark and so on. In addition, for each day, there are 288
+intervals / observations were recorded at per day.
 
 As such, the data provided to us is a 3-column data frame:
 
