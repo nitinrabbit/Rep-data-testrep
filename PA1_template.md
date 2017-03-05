@@ -101,6 +101,9 @@ from .zip archive file and all we need to do is to read the datafile
 activity.csv in using read.csv(). After, the dates will be transformed
 into the POSIXlt class.
 
+    data <- read.csv("activity.csv")
+    head(data)
+
     ##   steps       date interval
     ## 1    NA 2012-10-01        0
     ## 2    NA 2012-10-01        5
@@ -108,6 +111,15 @@ into the POSIXlt class.
     ## 4    NA 2012-10-01       15
     ## 5    NA 2012-10-01       20
     ## 6    NA 2012-10-01       25
+
+    # Turn the data$date into a POSIXIt class, 
+    # allows for easier handling & transformations
+    dates_posixit <- strptime(data$date, "%Y-%m-%d")
+    data$date <- dates_posixit
+
+    # Record unique values for future processing
+    uniqueDates <- unique(dates_posixit)
+    uniqueIntervals <- unique(data$interval)
 
 As for uniqueDates and uniqueIntervals, these are variables that store a
 list of all possible dates and intervals. These will primarily be used
@@ -128,9 +140,22 @@ x-axis represents the particular day in question, while the y-axis
 denotes how many steps were taken in total for each day. We will also
 calculate what the mean and median number of steps per day were as well.
 
+    steps_split_day <- split(data$steps, dates_posixit$yday)
+    steps_split_day_sum <- sapply(steps_split_day, sum, na.rm = TRUE)
+    plot(uniqueDates, steps_split_day_sum, main="Histogram of steps taken each day", 
+         xlab="Date (October to November 2012)", ylab="Frequency", type="h", lwd=8, col="blue")
+
 ![](PA1_template_files/figure-markdown_strict/unnamed-chunk-3-1.png)
 
 The mean and median steps per day are:
+
+    steps_split_day_mean <- sapply(steps_split_day, mean, na.rm = TRUE)
+    steps_split_day_median <- sapply(steps_split_day, median, na.rm = TRUE)
+    steps_split_day_mean_df <- data.frame(date=uniqueDates,
+                                     mean_steps=steps_split_day_mean, row.names=NULL)
+    steps_split_day_median_df <- data.frame(date=uniqueDates,
+                                     median_steps=steps_split_day_median, row.names=NULL)
+    head(steps_split_day_mean_df)
 
     ##         date mean_steps
     ## 1 2012-10-01        NaN
@@ -139,6 +164,8 @@ The mean and median steps per day are:
     ## 4 2012-10-04   42.06944
     ## 5 2012-10-05   46.15972
     ## 6 2012-10-06   53.54167
+
+    head(steps_split_day_median_df)
 
     ##         date median_steps
     ## 1 2012-10-01           NA
@@ -160,6 +187,25 @@ note that we again will ignore NA values. We will thus plot the data as
 a time-series plot (of type="l"). Once we have done this, we will locate
 where in the time-series plot the maximum is located and will draw a red
 vertical line to denote this location:
+
+    steps_split_interval <- split(data$steps, data$interval)
+
+    # Find the average amount of steps per time interval - ignore NA values
+    steps_split_interval_mean <- sapply(steps_split_interval, mean, na.rm=TRUE)
+
+    # Plot the time-series graph
+    plot(uniqueIntervals, steps_split_interval_mean, type="l",
+         main="Average number of steps per interval across all days", 
+         xlab="Interval", ylab="Average # of steps across all days", 
+         lwd=2, col="blue")
+
+    steps_split_interval_max = max(steps_split_interval_mean, na.rm = TRUE)
+    steps_split_interval_maxIndex <- as.numeric(which(steps_split_interval_mean
+                                                       == steps_split_interval_max))
+
+    maxInterval <- uniqueIntervals[steps_split_interval_maxIndex]
+    abline(v=maxInterval, col="red", lwd=3)
+
 ![](PA1_template_files/figure-markdown_strict/unnamed-chunk-5-1.png)
 
 Imputing the missing values.
@@ -171,9 +217,37 @@ set is to replace all NA values with the mean of that particular
 this strategy, let's replace all of the NA values with the
 aforementioned strategy.
 
+    steps_split_interval_mean[is.nan(steps_split_interval_mean)] <- 0
+    steps_split_interval_mean_replicated <- rep(steps_split_interval_mean, 61)
+    rawSteps <- data$steps
+    stepsNA <- is.na(rawSteps)
+    rawSteps[stepsNA] <- steps_split_interval_mean_replicated[stepsNA]
+    dataNew <- data
+    dataNew$steps <- rawSteps
+
+    steps_split_day_new <- split(dataNew$steps, dates_posixit$yday)
+    steps_split_day_new_mean <- sapply(steps_split_day_new, sum)
+    par(mfcol=c(2,1))
+
+    # Plot the original histogram first
+    plot(uniqueDates, steps_split_day_mean, main="Histogram of steps taken each day before imputing", 
+         xlab="Date (October to November 2012)", ylab="Frequency", type="h", lwd=8, col="blue")
+
+    # Plot the modified histogram after
+    plot(uniqueDates, steps_split_day_new_mean, main="Histogram of steps taken each day after imputing", 
+         xlab="Date (October to November 2012)", ylab="Frequency", type="h", lwd=8, col="blue")
+
 ![](PA1_template_files/figure-markdown_strict/unnamed-chunk-7-1.png)
 
 The new mean and median steps per day are:
+
+    steps_split_day_new_mean <- sapply(steps_split_day_new, mean, na.rm = TRUE)
+    steps_split_day_new_median <- sapply(steps_split_day_new, median, na.rm = TRUE)
+    steps_split_day_new_mean_df <- data.frame(date=uniqueDates,
+                                     mean_steps=steps_split_day_new_mean, row.names=NULL)
+    steps_split_day_new_median_df <- data.frame(date=uniqueDates,
+                                     median_steps=steps_split_day_new_median, row.names=NULL)
+    head(steps_split_day_new_mean_df)
 
     ##         date mean_steps
     ## 1 2012-10-01   37.38260
@@ -182,6 +256,8 @@ The new mean and median steps per day are:
     ## 4 2012-10-04   42.06944
     ## 5 2012-10-05   46.15972
     ## 6 2012-10-06   53.54167
+
+    head(steps_split_day_new_median_df)
 
     ##         date median_steps
     ## 1 2012-10-01     34.11321
@@ -199,6 +275,22 @@ data into two data frames - one data frame consists of all steps taken
 on a weekday, while the other data frame consists of all steps taken on
 a weekend. The following R code illustrates this for us:
 
+    wdays <- dates_posixit$wday
+    type_day <- rep(0, 17568)
+
+    # set the factor 1 for a weekday and 2 for a weekend
+    type_day[wdays >= 1 & wdays <= 5] <- 1
+    type_day[wdays == 0 | wdays == 6] <- 2
+
+    # create a new factor variable that has labels weekend & weekdays
+    day_factor <- factor(type_day, levels=c(1,2), labels=
+                        c("Weekdays", "Weekends"))
+
+    dataNew$typeofday <- day_factor
+
+    dataNew_weekdays <- dataNew[dataNew$typeofday == "Weekdays",]
+    dataNew_weekends <- dataNew[dataNew$typeofday == "Weekends",]
+
 Now that we have accomplished this, let's split up the data for each
 data frame so that we will have two sets of individual data frames. One
 set is for weekdays and within this data frame are individual data
@@ -210,6 +302,23 @@ two sets of data frames, we will now calculate the mean amount of steps
 for each interval for the weekdays data frame and weekends data frame.
 This will result in two vectors - one for the weekdays and the other for
 weekends. The following R code does this for us:
+
+    step_split_dataNew_weekdays <- split(dataNew_weekdays$steps, dataNew_weekdays$interval)
+    step_split_dataNew_weekends <- split(dataNew_weekends$steps, dataNew_weekends$interval)
+
+    step_split_dataNew_weekdays_mean <- sapply(step_split_dataNew_weekdays, mean)
+    step_split_dataNew_weekends_mean <- sapply(step_split_dataNew_weekends, mean)
+
+    par(mfcol=c(2,1))
+    plot(uniqueIntervals, step_split_dataNew_weekdays_mean, type="l",
+         main="Average number of steps per interval across all weekdays", 
+         xlab="Interval", ylab="Average # of steps across all weekdays", 
+         lwd=2, col="blue")
+    plot(uniqueIntervals, step_split_dataNew_weekends_mean, type="l",
+         main="Average number of steps per interval across all weekends", 
+         xlab="Interval", ylab="Average # of steps across all weekends", 
+         lwd=2, col="blue")
+
 ![](PA1_template_files/figure-markdown_strict/unnamed-chunk-10-1.png)
 What is interesting about this plot is that it very much sums up the
 activity that any normal person would undergo depending on whether it is
